@@ -118,7 +118,7 @@ public class ClienteChat extends JFrame implements ActionListener {
 		Socket s = null;
 		try {
 			// cliente y servidor se ejecuan en maquina local
-			s = new Socket("YOUR IP", puerto);
+			s = new Socket("192.168.1.37", puerto);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "IMPOSIBLE CONECTAR CON EL SERVIDOR", e.getMessage(),
 					JOptionPane.ERROR_MESSAGE);
@@ -130,7 +130,23 @@ public class ClienteChat extends JFrame implements ActionListener {
 			cliente.setVisible(true);
 			cliente.ejecutar();
 		} else {
+			errorName(s);
 			System.out.println("El nombre esta vac√≠o");
+		}
+	}
+
+	public static void errorName(Socket s) {
+		for (int i = 0; i < 2; i++) {
+			JOptionPane.showMessageDialog(null,
+					"No has introducido ning˙n nombre, vuelve a intentarlo, tienes " + (2 - i) + " intento/s m·s");
+			String nombre = JOptionPane.showInputDialog("Introduce tu nombre o nick:");
+			if (!nombre.trim().equals("")) {
+				ClienteChat cliente = new ClienteChat(s, nombre);
+				cliente.setBounds(0, 0, 540, 400);
+				cliente.setVisible(true);
+				cliente.ejecutar();
+				break;
+			}
 		}
 	}
 
