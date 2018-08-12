@@ -7,6 +7,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -61,8 +63,29 @@ public class ClienteChat extends JFrame implements ActionListener {
 		}
 	}
 
+	// Añado acción en el 'JTextField mensaje': Envia mensaje cuando pulsamos enter
+	// y hay algo escrito. (Esta acción se añade al JTextField al comienzo del
+	// metodo ejecutar())
+
+	Action action = new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String texto = nombre + "> " + mensaje.getText();
+			// limpio area de mensaje
+			if (!mensaje.getText().equals("")) {
+				try {
+					fsalida.writeUTF(texto);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			mensaje.setText("");
+		}
+	};
+
 	// cuando pulsamos botones
 	public void actionPerformed(ActionEvent e) {
+
 		if (e.getSource() == boton) {// se pulsa el boton ENVIAR
 			String texto = nombre + "> " + mensaje.getText();
 			try {
@@ -91,6 +114,7 @@ public class ClienteChat extends JFrame implements ActionListener {
 
 	public void ejecutar() {
 		String texto = "";
+		mensaje.addActionListener(action);
 		while (repetir) {
 			try {
 				texto = fentrada.readUTF();
